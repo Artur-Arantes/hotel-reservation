@@ -24,6 +24,24 @@ jobs:
       - name: Build and test with Maven
         run: ./mvnw verify
 
+      - name: Generate JaCoCo badge
+        id: jacoco
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          jacoco-csv-file: target/site/jacoco/jacoco.csv
+          badges-directory: .github/badges
+          generate-coverage-badge: true
+          coverage-badge-filename: jacoco.svg
+
+      - name: Commit and push badge
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Actions"
+          git add .github/badges/jacoco.svg 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "chore: update coverage badge [skip ci]"
+          git push
+
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v4
