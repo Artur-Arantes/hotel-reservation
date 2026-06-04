@@ -43,6 +43,10 @@ public class AuthController {
     @ApiResponse(responseCode = "201", description = "User registered successfully")
     @ApiResponse(responseCode = "400", description = "Validation error")
     public ResponseEntity<TokenResponse> register(@RequestBody @Valid final RegisterRequest request) {
+        if (userRepository.findByEmail(request.email()).isPresent()) {
+            throw new IllegalArgumentException("Email already in use: " + request.email());
+        }
+
         final var user = User.builder()
                 .name(request.name())
                 .email(request.email())
