@@ -1,0 +1,12 @@
+services:
+  db:
+    image: mysql/mysql-server:8.0.4
+    environment:
+      MYSQL_DATABASE: 'hotel_reservation'
+      MYSQL_ROOT_PASSWORD: '123456'
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_USER: "root"
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
